@@ -1,18 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 from qt_common import *
+
 from app_main import MainWidget
+from app_menu import app_menu
+from app_toolbar import app_toolbar
 
 class MainWindow(QMainWindow):
     def __init__(self, parent):
         super(MainWindow, self).__init__()
         self.setWindowTitle(APP_NAME)
-        self.setStyleSheet(base_css)
+        self.setStyleSheet(app_skin)
         self.app = parent
         self.init_ui()
+        self.restore_state()
+        self.show()
 
+    def init_ui(self):
+        log.debug("Initializing GUI")
+        app_menu(self)
+        app_toolbar(self)
+        self.main_widget = MainWidget(self)
+        self.setCentralWidget(self.main_widget)
+
+    def save_state(self):
+        settings = app_settings() 
+        settings.setValue("main_window/state", self.saveState())
+        settings.setValue("main_window/geometry", self.saveGeometry())
+
+    def restore_state(self):
         settings = app_settings()
         if "main_window/geometry" in settings.allKeys():
             self.restoreGeometry(settings.value("main_window/geometry"))
@@ -24,24 +41,16 @@ class MainWindow(QMainWindow):
             qr.moveCenter(cp)
             self.move(qr.topLeft())
 
-        self.show()
+    def status(self, message, message_type=1):
+        self.statusBar().showMessage(message)
+        if message_type > 0:
+            print (message)
 
     def closeEvent(self, event):
-        settings = app_settings() 
-        settings.setValue("main_window/state", self.saveState())
-        settings.setValue("main_window/geometry", self.saveGeometry())
-
+        self.save_state()
         if hasattr(self.main_widget, "on_close"):
             self.main_widget.on_close()
 
-    def init_ui(self):
-        self.main_widget = MainWidget(self)
-        self.setCentralWidget(self.main_widget)
-
-    def status(self, message, message_type=1):
-        print (message)
-        if message_type > 0:
-            self.statusBar().showMessage(message)
 
 
 class Application(QApplication):
