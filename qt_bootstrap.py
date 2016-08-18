@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 from qt_common import *
 
@@ -25,7 +24,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.main_widget)
 
     def save_state(self):
-        settings = app_settings() 
+        settings = app_settings()
         settings.setValue("main_window/state", self.saveState())
         settings.setValue("main_window/geometry", self.saveGeometry())
 

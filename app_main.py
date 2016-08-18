@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from qt_common import *
 
 class MainWidget(QWidget):

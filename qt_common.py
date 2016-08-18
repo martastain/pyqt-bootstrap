@@ -1,6 +1,5 @@
 import os
 import sys
-import logging
 
 from app_settings import *
 
@@ -11,33 +10,31 @@ from PyQt5.QtNetwork import *
 
 Signal = pyqtSignal
 Slot = pyqtSlot
-Property = pyqtProperty 
-
+Property = pyqtProperty
 
 if getattr(sys, 'frozen', False):
-    log_level = logging.INFO
     APP_PATH = os.path.dirname(sys.executable)
 else:
-    log_level = logging.DEBUG
     APP_PATH = os.path.dirname(os.path.realpath(__file__))
 
-##########################################################################
-## Logging
+#
+# Logging
+#
 
-logging.basicConfig(
-    level=log_level
-    )
+logging.name = APP_COMMAND
 
-log = logging.getLogger(APP_COMMAND)
-
-
-## Logging
-##########################################################################
+#
+# Skin
+#
 
 try:
     app_skin = open("skin.css").read()
 except:
     app_skin = ""
+
+#
+# Settings
+#
 
 def app_settings():
     return QSettings(os.path.join(APP_PATH, "{}.conf".format(APP_COMMAND)), QSettings.IniFormat)
