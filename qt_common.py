@@ -1,16 +1,19 @@
 import os
 import sys
 
-from app_settings import *
+from nxtools import *
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui  import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtNetwork import *
 
+from app_settings import *
+
 Signal = pyqtSignal
 Slot = pyqtSlot
 Property = pyqtProperty
+
 
 if getattr(sys, 'frozen', False):
     APP_PATH = os.path.dirname(sys.executable)
@@ -20,6 +23,12 @@ else:
 #
 # Logging
 #
+
+DEBUG     = 0
+INFO      = 1
+WARNING   = 2
+ERROR     = 3
+GOOD_NEWS = 4
 
 logging.name = APP_COMMAND
 

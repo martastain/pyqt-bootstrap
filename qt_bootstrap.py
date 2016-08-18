@@ -6,9 +6,11 @@ from app_main import MainWidget
 from app_menu import app_menu
 from app_toolbar import app_toolbar
 
+
 class MainWindow(QMainWindow):
     def __init__(self, parent):
         super(MainWindow, self).__init__()
+        logging.add_handler(self.log_handler)
         self.setWindowTitle(APP_NAME)
         self.setStyleSheet(app_skin)
         self.app = parent
@@ -17,7 +19,7 @@ class MainWindow(QMainWindow):
         self.show()
 
     def init_ui(self):
-        log.debug("Initializing GUI")
+        logging.debug("Initializing GUI")
         app_menu(self)
         app_toolbar(self)
         self.main_widget = MainWidget(self)
@@ -40,10 +42,17 @@ class MainWindow(QMainWindow):
             qr.moveCenter(cp)
             self.move(qr.topLeft())
 
-    def status(self, message, message_type=1):
-        self.statusBar().showMessage(message)
-        if message_type > 0:
-            print (message)
+    def log_handler(self, **kwargs):
+        message_type = kwargs.get("message_type", INFO)
+        message = kwargs.get("message", "")
+        if not message:
+            return
+        if message_type == WARNING:
+            QMessageBox.warning(self, "Warning", message)
+        elif message_type== ERROR:
+            QMessageBox.critical(self, "Error", message)
+        else:
+            self.statusBar().showMessage(message, 10000)
 
     def closeEvent(self, event):
         self.save_state()
