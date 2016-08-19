@@ -1,40 +1,30 @@
-#!/usr/bin/env python3
+from .common import *
 
-from qt_common import *
-
-from app_main import MainWidget
-from app_menu import app_menu
-from app_toolbar import app_toolbar
-
+DEFAULT_W = 800
+DEFAULT_H = 600
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent):
+    def __init__(self, parent, MainWidgetClass):
         super(MainWindow, self).__init__()
         logging.add_handler(self.log_handler)
-        self.setWindowTitle(APP_NAME)
+        self.setWindowTitle(app_settings["title"])
         self.setStyleSheet(app_skin)
         self.app = parent
-        self.init_ui()
+        self.main_widget = MainWidgetClass(self)
+        self.setCentralWidget(self.main_widget)
         self.restore_state()
         self.show()
 
-    def init_ui(self):
-        logging.debug("Initializing GUI")
-        app_menu(self)
-        app_toolbar(self)
-        self.main_widget = MainWidget(self)
-        self.setCentralWidget(self.main_widget)
-
     def save_state(self):
-        settings = app_settings()
-        settings.setValue("main_window/state", self.saveState())
-        settings.setValue("main_window/geometry", self.saveGeometry())
+        state = get_app_state()
+        state.setValue("main_window/state", self.saveState())
+        state.setValue("main_window/geometry", self.saveGeometry())
 
     def restore_state(self):
-        settings = app_settings()
-        if "main_window/geometry" in settings.allKeys():
-            self.restoreGeometry(settings.value("main_window/geometry"))
-            self.restoreState(settings.value("main_window/state"))
+        state = get_app_state()
+        if "main_window/geometry" in state.allKeys():
+            self.restoreGeometry(state.value("main_window/geometry"))
+            self.restoreState(state.value("main_window/state"))
         else:
             self.resize(DEFAULT_W, DEFAULT_H)
             qr = self.frameGeometry()
@@ -58,15 +48,3 @@ class MainWindow(QMainWindow):
         self.save_state()
         if hasattr(self.main_widget, "on_close"):
             self.main_widget.on_close()
-
-
-
-class Application(QApplication):
-    def __init__(self):
-        super(Application, self).__init__(sys.argv)
-        self.main_window = MainWindow(self)
-
-
-if __name__ == "__main__":
-    app = Application()
-    app.exec_()
