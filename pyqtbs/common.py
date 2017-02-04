@@ -76,7 +76,7 @@ def get_pix(name):
     if not name:
         return None
     pixmap = QPixmap(":/images/{}.png".format(name))
-    if not pixmap:
+    if not pixmap.width():
         pix_file = os.path.join(app_dir, "images", "{}.png".format(name))
         if os.path.exists(pix_file):
             return QPixmap(pix_file)
