@@ -10,15 +10,24 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(app_settings["title"])
         self.setStyleSheet(app_skin)
         self.app = parent
+        self.restore_state()
         self.main_widget = MainWidgetClass(self)
         self.setCentralWidget(self.main_widget)
-        self.restore_state()
         self.show()
+
+    @property
+    def app_state(self):
+        return self.app.app_state
+
+    @app_state.setter
+    def app_state(self, value):
+        self.app.app_state = value
 
     def save_state(self):
         state = get_app_state()
         state.setValue("main_window/state", self.saveState())
         state.setValue("main_window/geometry", self.saveGeometry())
+        state.setValue("main_window/app", self.app_state)
 
     def restore_state(self):
         state = get_app_state()
@@ -31,6 +40,11 @@ class MainWindow(QMainWindow):
             cp = QDesktopWidget().availableGeometry().center()
             qr.moveCenter(cp)
             self.move(qr.topLeft())
+        if "main_window/app" in state.allKeys():
+            try:
+                self.app_state = state.value("main_window/app")
+            except Exception:
+                log_traceback()
 
     def log_handler(self, **kwargs):
         message_type = kwargs.get("message_type", INFO)

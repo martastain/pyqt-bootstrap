@@ -10,7 +10,6 @@ class MainWidget(QWidget):
         layout.addWidget(label)
         self.setLayout(layout)
 
-
 if __name__ == "__main__":
     app = Application(
             name="qtdemo",
@@ -19,4 +18,3 @@ if __name__ == "__main__":
 
     window = MainWindow(app, MainWidget)
     app.exec_()
-

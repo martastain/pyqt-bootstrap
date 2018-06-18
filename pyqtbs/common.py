@@ -40,7 +40,6 @@ class AppSettings():
 
 app_settings = AppSettings()
 
-
 def get_app_state():
     return QSettings(os.path.join(app_dir, "{}.appstate".format(app_settings["name"])), QSettings.IniFormat)
 
