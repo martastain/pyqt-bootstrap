@@ -24,13 +24,13 @@ class MainWindow(QMainWindow):
         self.app.app_state = value
 
     def save_state(self):
-        state = get_app_state()
+        state = get_app_state(self.app.app_state_path)
         state.setValue("main_window/state", self.saveState())
         state.setValue("main_window/geometry", self.saveGeometry())
         state.setValue("main_window/app", self.app_state)
 
     def restore_state(self):
-        state = get_app_state()
+        state = get_app_state(self.app.app_state_path)
         if "main_window/geometry" in state.allKeys():
             self.restoreGeometry(state.value("main_window/geometry"))
             self.restoreState(state.value("main_window/state"))
